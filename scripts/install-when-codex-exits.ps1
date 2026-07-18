@@ -15,7 +15,10 @@ if ($NodePath) {
 
 function Test-CodexRunning {
   @(Get-CimInstance Win32_Process -Filter "Name = 'ChatGPT.exe'" -ErrorAction SilentlyContinue |
-    Where-Object { "$($_.ExecutablePath)" -like '*\OpenAI.Codex_*\app\ChatGPT.exe' }).Count -gt 0
+    Where-Object {
+      "$($_.ExecutablePath)" -like '*\OpenAI.Codex_*\app\ChatGPT.exe' -and
+      "$($_.CommandLine)" -notmatch '\s--type='
+    }).Count -gt 0
 }
 
 while ((Get-Date) -lt $deadline) {
