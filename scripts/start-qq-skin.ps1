@@ -30,7 +30,16 @@ try {
   $themePaths = Initialize-QQSkinThemeStore -SkillRoot (Split-Path -Parent $PSScriptRoot) -StateRoot $StateRoot
   $pauseWasSet = Test-QQSkinPaused -StateRoot $StateRoot
 
-  $previousState = Read-QQSkinState -Path $StatePath
+  $previousState = $null
+  try {
+    $previousState = Read-QQSkinState -Path $StatePath
+  } catch {
+    Write-Warning "$($_.Exception.Message)"
+    $archivedState = Archive-QQSkinStateFile -Path $StatePath
+    if ($archivedState) {
+      Write-Warning "Archived unreadable Retro QQ Skin state to: $archivedState"
+    }
+  }
   if (-not $PortExplicit -and $null -ne $previousState -and $previousState.port) {
     $savedPort = [int]$previousState.port
     Assert-QQSkinPort -Port $savedPort

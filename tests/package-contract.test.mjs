@@ -28,11 +28,15 @@ test("package exposes reusable Retro QQ Skin files", () => {
 
 test("Windows runtime uses independent QQ state and script names", () => {
   const common = readFileSync(path("scripts/common-windows.ps1"), "utf8");
+  const waitInstaller = readFileSync(path("scripts/install-when-codex-exits.ps1"), "utf8");
   assert.match(common, /CodexQQSkin/);
   assert.match(common, /start-qq-skin\.ps1/);
   assert.match(common, /restore-qq-skin\.ps1/);
   assert.match(common, /tray-qq-skin\.ps1/);
   assert.doesNotMatch(common, /CodexDreamSkin/);
+  assert.match(waitInstaller, /Stop-QQSkinTrayForReinstall/);
+  assert.match(waitInstaller, /tray-qq-skin\.ps1/);
+  assert.match(waitInstaller, /-notmatch '\\s--type='/);
 });
 
 test("injector builds the QQ renderer payload", () => {
@@ -43,4 +47,6 @@ test("injector builds the QQ renderer payload", () => {
   assert.match(injector, /__QQ_SKIN_RETRO_FRAME_JSON__/);
   assert.match(injector, /__QQ_SKIN_QQ_AVATAR_JSON__/);
   assert.doesNotMatch(injector, /__DREAM_CSS_JSON__/);
+  assert.match(injector, /__CODEX_QQ_SKIN_STATE__/);
+  assert.doesNotMatch(injector, /__CODEX_DREAM_SKIN_STATE__/);
 });

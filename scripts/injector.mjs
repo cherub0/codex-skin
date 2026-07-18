@@ -551,26 +551,25 @@ async function removeEarlyPayload(session, identifier) {
 
 async function removeFromSession(session) {
   return session.evaluate(`(() => {
-    window.__CODEX_DREAM_SKIN_DISABLED__ = true;
-    const state = window.__CODEX_DREAM_SKIN_STATE__;
+    window.__CODEX_QQ_SKIN_DISABLED__ = true;
+    const state = window.__CODEX_QQ_SKIN_STATE__;
     if (state?.cleanup) return state.cleanup();
     document.documentElement?.classList.remove(
-      'codex-qq-skin', 'dream-theme-light', 'dream-theme-dark',
-      'dream-art-wide', 'dream-art-standard', 'dream-focus-left',
-      'dream-focus-center', 'dream-focus-right', 'dream-safe-left',
-      'dream-safe-center', 'dream-safe-right', 'dream-safe-none',
-      'dream-task-ambient', 'dream-task-banner', 'dream-task-off'
+      'codex-qq-skin'
     );
     for (const property of [
-      '--dream-art', '--dream-art-position', '--dream-focus-x', '--dream-focus-y',
-      '--dream-accent', '--dream-accent-ink', '--dream-image-luma'
+      '--qq-skin-art', '--dream-retro-frame', '--qq-skin-name',
+      '--qq-skin-tagline', '--qq-skin-project-prefix', '--qq-skin-project-label'
     ]) document.documentElement?.style.removeProperty(property);
-    document.querySelectorAll('.dream-home').forEach((node) => node.classList.remove('dream-home'));
-    document.querySelectorAll('.dream-task').forEach((node) => node.classList.remove('dream-task'));
-    document.querySelectorAll('.dream-home-shell').forEach((node) => node.classList.remove('dream-home-shell'));
+    document.querySelectorAll('.qq-skin-home').forEach((node) => node.classList.remove('qq-skin-home'));
+    document.querySelectorAll('.qq-skin-home-shell').forEach((node) => node.classList.remove('qq-skin-home-shell'));
+    document.querySelectorAll('.qq-skin-home-utility').forEach((node) => node.classList.remove('qq-skin-home-utility'));
     document.getElementById('codex-qq-skin-style')?.remove();
     document.getElementById('codex-qq-skin-chrome')?.remove();
-    delete window.__CODEX_DREAM_SKIN_STATE__;
+    document.getElementById('codex-qq-skin-retro-shell')?.remove();
+    document.getElementById('codex-qq-skin-right-tray')?.remove();
+    document.getElementById('codex-qq-skin-home-pet')?.remove();
+    delete window.__CODEX_QQ_SKIN_STATE__;
     return true;
   })()`);
 }
@@ -578,13 +577,12 @@ async function removeFromSession(session) {
 async function verifyRemovedSession(session) {
   return session.evaluate(`(() =>
     !document.documentElement.classList.contains('codex-qq-skin') &&
-    !document.documentElement.style.getPropertyValue('--dream-art') &&
-    !document.querySelector('.dream-home') &&
-    !document.querySelector('.dream-task') &&
-    !document.querySelector('.dream-home-shell') &&
+    !document.documentElement.style.getPropertyValue('--qq-skin-art') &&
+    !document.querySelector('.qq-skin-home') &&
+    !document.querySelector('.qq-skin-home-shell') &&
     !document.getElementById('codex-qq-skin-style') &&
     !document.getElementById('codex-qq-skin-chrome') &&
-    !window.__CODEX_DREAM_SKIN_STATE__
+    !window.__CODEX_QQ_SKIN_STATE__
   )()`);
 }
 
@@ -595,12 +593,12 @@ async function verifySession(session) {
       const r = node.getBoundingClientRect();
       return { x: Math.round(r.x), y: Math.round(r.y), width: Math.round(r.width), height: Math.round(r.height) };
     };
-    const home = document.querySelector('.dream-home');
+    const home = document.querySelector('.qq-skin-home');
     const suggestions = home?.querySelector('.group\\\\/home-suggestions') ?? null;
     const cards = suggestions ? [...suggestions.querySelectorAll('button')].map(box) : [];
     const result = {
       installed: document.documentElement.classList.contains('codex-qq-skin'),
-      version: window.__CODEX_DREAM_SKIN_STATE__?.version ?? null,
+      version: window.__CODEX_QQ_SKIN_STATE__?.version ?? null,
       expectedVersion: ${JSON.stringify(SKIN_VERSION)},
       stylePresent: Boolean(document.getElementById('codex-qq-skin-style')),
       chromePresent: Boolean(document.getElementById('codex-qq-skin-chrome')),

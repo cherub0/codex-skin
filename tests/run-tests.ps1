@@ -784,10 +784,14 @@ try {
     throw 'Start still executes the WindowsApps path instead of activating the registered package.'
   }
   $stateReadIndex = $startSource.IndexOf('$previousState = Read-QQSkinState', [System.StringComparison]::Ordinal)
+  $stateArchiveIndex = $startSource.IndexOf('Archive-QQSkinStateFile -Path $StatePath', [System.StringComparison]::Ordinal)
   $restartPromptIndex = $startSource.IndexOf('$restartAuthorized = Confirm-QQSkinRestart', [System.StringComparison]::Ordinal)
   $recordedStopIndex = $startSource.IndexOf('$recordedInjectorStopped = Stop-QQSkinRecordedInjector', [System.StringComparison]::Ordinal)
   $cancelIndex = $startSource.IndexOf("Write-Host 'Retro QQ Skin launch was cancelled", [System.StringComparison]::Ordinal)
   $pauseClearIndex = $startSource.IndexOf('Set-QQSkinPaused -Paused $false', [System.StringComparison]::Ordinal)
+  if ($stateReadIndex -lt 0 -or $stateArchiveIndex -lt $stateReadIndex) {
+    throw 'Start does not archive unreadable state before continuing.'
+  }
   if ($stateReadIndex -lt 0 -or $pauseClearIndex -le $stateReadIndex -or
     ($restartPromptIndex -ge 0 -and $pauseClearIndex -le $restartPromptIndex) -or
     ($recordedStopIndex -ge 0 -and $pauseClearIndex -le $recordedStopIndex) -or
