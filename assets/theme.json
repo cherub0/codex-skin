@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "retro-qq-windows",
+  "name": "Codex Retro QQ Skin",
+  "brandSubtitle": "RETRO QQ SKIN",
+  "tagline": "Make something wonderful.",
+  "projectPrefix": "Project - ",
+  "projectLabel": "Select Project",
+  "statusText": "QQ SKIN ONLINE",
+  "quote": "Make something wonderful",
+  "image": "qq-reference.png",
+  "appearance": "auto",
+  "layout": {
+    "mode": "classic-three-pane",
+    "rightPanel": "open",
+    "minWidth": 1180,
+    "rightWidth": 300
+  },
+  "art": {
+    "focusX": 0.5,
+    "focusY": 0.5,
+    "safeArea": "center",
+    "taskMode": "ambient"
+  },
+  "colors": {
+    "background": "#F3F7FB",
+    "panel": "#FFFFFF",
+    "panelAlt": "#EAF4FF",
+    "accent": "#1F75C8",
+    "accentAlt": "#5DA8EC",
+    "secondary": "#2E9B75",
+    "highlight": "#0A5FB8",
+    "text": "#17395F",
+    "muted": "#4D7398",
+    "line": "rgba(46, 108, 172, .32)"
+  }
+}
