@@ -311,11 +311,13 @@ function Get-QQSkinNodeRuntime {
   param([int]$MinimumMajor = 22)
 
   $command = $null
+  $explicitRuntimePath = $null
   if ($env:CODEX_QQ_SKIN_NODE) {
     $candidate = [System.IO.Path]::GetFullPath($env:CODEX_QQ_SKIN_NODE)
     if (-not (Test-Path -LiteralPath $candidate -PathType Leaf)) {
       throw "CODEX_QQ_SKIN_NODE does not point to a file: $candidate"
     }
+    $explicitRuntimePath = $candidate
     $command = [pscustomobject]@{ Source = $candidate }
   }
   if (-not $command) { $command = Get-Command node.exe -ErrorAction SilentlyContinue }
@@ -324,10 +326,14 @@ function Get-QQSkinNodeRuntime {
   $versionProbe = Invoke-QQSkinNative -FilePath $command.Source -ArgumentList @('-p', 'process.versions.node') -DiscardStderr
   $version = ($versionProbe.Output -join '').Trim()
   if ($versionProbe.ExitCode -ne 0 -or -not $version) { throw 'The Node.js runtime could not be validated.' }
-  $pathProbe = Invoke-QQSkinNative -FilePath $command.Source -ArgumentList @('-p', 'process.execPath') -DiscardStderr
-  $runtimePath = ($pathProbe.Output -join '').Trim()
-  if ($pathProbe.ExitCode -ne 0 -or -not $runtimePath -or -not (Test-Path -LiteralPath $runtimePath)) {
-    throw 'The Node.js executable path could not be validated.'
+  if ($explicitRuntimePath) {
+    $runtimePath = $explicitRuntimePath
+  } else {
+    $pathProbe = Invoke-QQSkinNative -FilePath $command.Source -ArgumentList @('-p', 'process.execPath') -DiscardStderr
+    $runtimePath = ($pathProbe.Output -join '').Trim()
+    if ($pathProbe.ExitCode -ne 0 -or -not $runtimePath -or -not (Test-Path -LiteralPath $runtimePath)) {
+      throw 'The Node.js executable path could not be validated.'
+    }
   }
   $major = 0
   if (-not [int]::TryParse(($version -split '\.')[0], [ref]$major) -or $major -lt $MinimumMajor) {
